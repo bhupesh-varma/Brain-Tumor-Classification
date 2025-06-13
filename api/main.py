@@ -8,7 +8,7 @@ import tensorflow as tf
 
 app = FastAPI()
 
-MODEL = tf.keras.models.load_model("../saved_models/1.keras")
+MODEL = tf.keras.models.load_model("../models/1.keras")
 CLASS_NAMES = ['glioma', 'healthy', 'meningioma', 'pituitary']
 
 @app.get("/ping")

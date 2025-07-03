@@ -12,10 +12,10 @@ import os
 app = FastAPI()
 
 # Load model
-MODEL = tf.keras.models.load_model(r"C:\Users\RBV\Brain Tumor\models\1.keras")
+MODEL = tf.keras.models.load_model("../saved_models/1.keras")
 CLASS_NAMES = ['glioma', 'healthy', 'meningioma', 'pituitary']
 
-# Setup template rendering
+# Template rendering
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "../frontend"))
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "../static")), name="static")
@@ -36,9 +36,11 @@ def read_file_as_image(data) -> np.ndarray:
 async def predict(file: UploadFile = File(...)):
     image = read_file_as_image(await file.read())
     img_batch = np.expand_dims(image, 0)
+
     predictions = MODEL.predict(img_batch)
     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
     confidence = np.max(predictions[0])
+
     return {
         'class': predicted_class,
         'confidence': float(confidence)

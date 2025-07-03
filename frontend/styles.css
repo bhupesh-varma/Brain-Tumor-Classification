@@ -1,0 +1,22 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #0f0f0f;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+
+canvas {
+  border-radius: 0.5rem;
+  background-color: #1f1f1f;
+}
+
+#drop-area {
+  border: 2px dashed #4f46e5;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  color: #a5b4fc;
+  background-color: #1e1e1e;
+  cursor: pointer;
+}

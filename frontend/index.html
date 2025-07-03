@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Tumor Classifier</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #111;
+    }
+    .glass {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+  <div class="glass rounded-2xl p-10 w-full max-w-md flex flex-col items-center">
+    <h1 class="text-3xl font-bold text-white mb-6 text-center drop-shadow">Brain Tumor Classifier</h1>
+    <form id="upload-form" class="space-y-4 w-full flex flex-col items-center">
+      <input
+        type="file"
+        id="file"
+        name="file"
+        accept="image/*"
+        class="w-full p-2 border border-gray-700 rounded-md bg-black text-white file:bg-indigo-600 file:text-white file:border-0 file:rounded file:px-4 file:py-2"
+        required
+      />
+      <img id="preview" class="hidden mt-4 rounded-lg shadow-lg max-h-48 object-contain bg-gray-900" />
+      <button
+        type="submit"
+        class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition font-semibold text-lg"
+      >
+        Predict
+      </button>
+    </form>
+    <div id="result" class="mt-6 text-center text-lg text-indigo-200 font-semibold"></div>
+  </div>
+  <script>
+    const fileInput = document.getElementById('file');
+    const preview = document.getElementById('preview');
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          preview.src = evt.target.result;
+          preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.classList.add('hidden');
+        preview.src = '';
+      }
+    });
+
+    const form = document.getElementById('upload-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      const res = await fetch("/predict", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      document.getElementById('result').innerText =
+        `Prediction: ${data.class} (Confidence: ${(data.confidence * 100).toFixed(2)}%)`;
+    });
+  </script>
+</body>
+</html>
